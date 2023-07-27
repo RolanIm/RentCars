@@ -162,4 +162,5 @@ cython_debug/
 requirements.txt
 LICENSE
 .mypy_cache
-RentCars/static/
+/RentCars/secret.py
+static/
