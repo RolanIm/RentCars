@@ -13,27 +13,59 @@ from wheel.metadata import _
 
 
 class Ad(models.Model):
+    price_per_choice = [
+        ('H', 'hour'),
+        ('D', 'day'),
+        ('W', 'week'),
+        ('M', 'month'),
+    ]
+
+    #  Description
     text = models.TextField(null=True, blank=True)
+    #  user
     owner = models.ForeignKey('Owner',
                               on_delete=models.CASCADE)
+    #  auto
     car = models.ForeignKey('Car', on_delete=models.CASCADE)
+    #  reviews users about landlord
     comments = models.ManyToManyField('Owner',
                                       through='Comment',
                                       related_name='comments_owned'
                                       )
+    #  Optional picture
     picture = models.BinaryField(null=True, editable=True)
+    content_type = models.CharField(max_length=256, null=True,
+                                    help_text='The MIMEType of the file')
+    #  Favorites
     favorites = models.ManyToManyField('Owner',
                                        through='Fav',
                                        related_name='favorite_ads')
+    #  Import TaggableManager from taggit
     tags = TaggableManager(blank=True)
-    price = models.DecimalField(max_digits=9, decimal_places=2)
-    content_type = models.CharField(max_length=256, null=True,
-                                    help_text='The MIMEType of the file')
-    country = models.CharField(max_length=50, blank=False, null=False)
-    city = models.CharField(max_length=50, blank=False, null=False)
+    #  rental price
+    price_per = models.CharField(max_length=1,
+                                 choices=price_per_choice,
+                                 default='H')
+    price = models.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(1,
+                              'The rental price should be greater than zero.')
+        ]
+    )
+    #  location
+    country = models.CharField(max_length=50,
+                               blank=False,
+                               null=False)
+    city = models.CharField(max_length=50,
+                            blank=False,
+                            null=False)
+    #  Optional data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Shows up in the Admin list
     def __str__(self):
         return f'{self.car.make.name} {self.car.model_name}, {self.car.year}'
 
