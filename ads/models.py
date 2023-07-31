@@ -1,15 +1,15 @@
-import datetime
-
 from django.db import models
 from django.core.validators import (MinLengthValidator,
                                     MinValueValidator,
                                     MaxValueValidator)
 from django.contrib.auth.models import User
-from taggit.managers import TaggableManager
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from taggit.managers import TaggableManager
 from wheel.metadata import _
+import datetime
 
 
 class Ad(models.Model):
@@ -23,12 +23,16 @@ class Ad(models.Model):
     #  Description
     text = models.TextField(null=True, blank=True)
     #  user
-    owner = models.ForeignKey('Owner',
+    owner = models.ForeignKey(User,
                               on_delete=models.CASCADE)
     #  auto
-    car = models.ForeignKey('Car', on_delete=models.CASCADE)
+    car = models.ForeignKey('Car',
+                            blank=False,
+                            null=False,
+                            related_name='owner_car',
+                            on_delete=models.CASCADE)
     #  reviews users about landlord
-    comments = models.ManyToManyField('Owner',
+    comments = models.ManyToManyField(User,
                                       through='Comment',
                                       related_name='comments_owned'
                                       )
@@ -37,20 +41,22 @@ class Ad(models.Model):
     content_type = models.CharField(max_length=256, null=True,
                                     help_text='The MIMEType of the file')
     #  Favorites
-    favorites = models.ManyToManyField('Owner',
+    favorites = models.ManyToManyField(User,
                                        through='Fav',
                                        related_name='favorite_ads')
     #  Import TaggableManager from taggit
     tags = TaggableManager(blank=True)
     #  rental price
     price_per = models.CharField(max_length=1,
+                                 blank=False,
+                                 null=False,
                                  choices=price_per_choice,
                                  default='H')
     price = models.DecimalField(
         max_digits=9,
         decimal_places=2,
         validators=[
-            MinValueValidator(1,
+            MinValueValidator(0.1,
                               'The rental price should be greater than zero.')
         ]
     )
@@ -73,7 +79,7 @@ class Ad(models.Model):
 class Fav(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     owner = models.ForeignKey(
-        'Owner',
+        User,
         on_delete=models.CASCADE
     )
 
@@ -84,7 +90,7 @@ class Fav(models.Model):
         title = (f'{self.ad.car.make.name}'
                  f' {self.ad.car.model_name}, '
                  f'{self.ad.car.year}')
-        return '%s likes %s' % (self.owner.user.username, title)
+        return '%s likes %s' % (self.owner.username, title)
 
 
 class Comment(models.Model):
@@ -95,7 +101,7 @@ class Comment(models.Model):
     )
 
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
-    owner = models.ForeignKey('Owner',
+    owner = models.ForeignKey(User,
                               on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -161,7 +167,9 @@ class Car(models.Model):
 
 
 class Owner(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE)
     phone = PhoneNumberField(null=False, blank=False, unique=True)
 
     def __str__(self):
