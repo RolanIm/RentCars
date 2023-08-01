@@ -24,6 +24,7 @@ class Ad(models.Model):
     text = models.TextField(null=True, blank=True)
     #  user
     owner = models.ForeignKey(User,
+                              related_name='ads',
                               on_delete=models.CASCADE)
     #  auto
     car = models.ForeignKey('Car',
@@ -56,8 +57,10 @@ class Ad(models.Model):
         max_digits=9,
         decimal_places=2,
         validators=[
-            MinValueValidator(0.1,
-                              'The rental price should be greater than zero.')
+            MinValueValidator(
+                0.1,
+                'The rental price should be greater than zero.'
+            )
         ]
     )
     #  location
@@ -67,6 +70,12 @@ class Ad(models.Model):
     city = models.CharField(max_length=50,
                             blank=False,
                             null=False)
+    #  phone number
+    phone = PhoneNumberField(
+        null=False,
+        blank=False,
+        unique=True,
+    )
     #  Optional data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -171,6 +180,7 @@ class Owner(models.Model):
         User,
         on_delete=models.CASCADE)
     phone = PhoneNumberField(null=False, blank=False, unique=True)
+    bio = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
