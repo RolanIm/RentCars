@@ -1,4 +1,6 @@
-from .models import Ad, Make, Car
+import datetime
+
+from .models import Ad, Make, Car, current_year
 from django import forms
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from .humanize import natural_size
@@ -64,8 +66,15 @@ class MakeForm(forms.ModelForm):
         fields = 'name',
 
 
+def year_choices():
+    return [(r, r) for r in range(1980, datetime.date.today().year+1)]
+
+
 class CarForm(forms.ModelForm):
     """Car form for adding info about car owner."""
+
+    year = forms.TypedChoiceField(coerce=int, choices=year_choices,
+                                  initial=current_year)
 
     class Meta:
         model = Car
@@ -78,7 +87,7 @@ class CarForm(forms.ModelForm):
         ]
         labels = {
             'model_name': 'name of the car model',
-            'passenger_numbers': 'maximum number of passengers in the car',
+            'passenger_numbers': 'maximum number of passengers',
             'year': 'year of the car',
             'hp': 'horse powers'
         }
