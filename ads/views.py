@@ -1,14 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.db.models import Q
 
-from .models import Ad, Comment, Fav, Car, Owner, Make
+from .models import Ad, Comment, Fav
 from .owner import (OwnerListView, OwnerDeleteView,
                     OwnerDetailView, OwnerAdView)
 from .forms import MakeForm, AdForm, CarForm, CommentForm
@@ -82,9 +80,10 @@ class AdCreateView(LoginRequiredMixin, View):
             }
             return render(request, self.template_name, ctx)
 
-        # Add owner to the model Ad before saving
+        # Add owner and phone number to the model Ad before saving
         ad = ad_form.save(commit=False)
         ad.owner = self.request.user
+        ad.phone = self.request.user.owner.phone
         ad.save()
         ad_form.save()
         # Add make to the model Car before saving
@@ -151,9 +150,8 @@ class AdProfileView(LoginRequiredMixin, OwnerAdView):
 
     def get(self, request, *args, **kwargs):
         # select_related() cashes query
-        ads = Ad.objects.select_related().distinct()
-        query = ads.filter(owner=request.user)
-        super().get(self, ads_with_filter=query, statement=None)
+        ads = request.user.ads.select_related().distinct()
+        super().get(self, ads_with_filter=ads, statement=None)
 
 
 class CommentCreateView(LoginRequiredMixin, View):
