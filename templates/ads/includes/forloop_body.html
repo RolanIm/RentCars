@@ -1,0 +1,44 @@
+{% load humanize %}
+<div class="row row-cols-auto row-cols-md-auto g-4">
+    {% for ad in page_obj %}
+        <div class="col">
+          <div class="card h-100" style="width: 18rem;">
+              <a href="{% url 'ads:ad_detail' ad.id %}">
+                  <img src="{% url 'ads:ad_picture' ad.id %}" class="card-img-top" alt="{{ ad }}">
+              </a>
+              <div class="card-body">
+              <a href="{% url 'ads:ad_detail' ad.id %}" class="link-dark text-decoration-none">
+                <h5 class="card-title">{{ ad }}</h5>
+                  <p class="card-text">
+                      {{ ad.country }}, {{ ad.city}}
+                      <br>{{ ad.price }}{{ ad.currency }} per {{ ad.price_per }}
+                  </p>
+              </a>
+              </div>
+              <ul class="list-group list-group-flush">
+                <a href="{% url 'ads:ad_detail' ad.id %}" class="link-dark text-decoration-none">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Transmission
+                        <span class="badge bg-primary rounded-pill">{{ ad.car.transmission }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Number of passengers
+                        <span class="badge bg-primary rounded-pill">{{ ad.car.passenger_numbers }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Horse powers
+                        <span class="badge bg-primary rounded-pill">{{ ad.car.hp }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Year
+                        <span class="badge bg-primary rounded-pill">{{ ad.car.year }}</span>
+                    </li>
+                </a>
+              </ul>
+              <div class="card-footer text-muted">
+                {{ ad.created_at|naturaltime }}
+              </div>
+          </div>
+        </div>
+    {% endfor %}
+</div>

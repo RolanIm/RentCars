@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (CreateView, UpdateView, DeleteView,
                                   ListView, DetailView)
@@ -17,9 +16,9 @@ class OwnerAdView(View):
     paginating ads.
     """
 
-    template_name = reverse_lazy('ads:all')
+    template_name = 'ads/ad_list.html'
 
-    def get(self, request, ads_with_filter=None, statement=None):
+    def get(self, request, ads=None, statement=None, ctx=None):
         #  search
         str_val = request.GET.get('search', False)
         if str_val:
@@ -33,23 +32,22 @@ class OwnerAdView(View):
                 q5 = Q(tags__name__in=[str_val])
                 statement = q1 | q2 | q3 | q4 | q5
             # select_related() cashes query
-            if ads_with_filter:
-                query = ads_with_filter.filter(statement)
+            if ads:
+                query = ads.filter(statement)
             else:
                 query = Ad.objects.select_related().distinct().filter(statement)
 
         else:
-            if ads_with_filter:
-                query = ads_with_filter
-            else:
-                query = Ad.objects.all()
+            query = ads
 
-        #  shows up latest 10 ads on each page
-        paginator = Paginator(query.order_by('-created_at'), 10)
+        #  shows up latest 12 ads on each page
+        paginator = Paginator(query.order_by('-created_at'), 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-
-        ctx = {'page_obj': page_obj}
+        if ctx:
+            ctx['page_obj'] = page_obj
+        else:
+            ctx = {'page_obj': page_obj}
         return render(request, self.template_name, ctx)
 
 

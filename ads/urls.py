@@ -17,6 +17,16 @@ urlpatterns = [
         'ad/<int:pk>/delete',
         views.AdDeleteView.as_view(),
         name='ad_delete'),
+    path(
+        'ad/favorites',
+        views.AdFavoritesView.as_view(),
+        name='favorites'
+    ),
+    path(
+        'ad/<str:username>/profile',
+        views.AdProfileView.as_view(),
+        name='profile'
+    ),
     path('ad_picture/<int:pk>', views.stream_file, name='ad_picture'),
     path('ad/<int:pk>/comment',
          views.CommentCreateView.as_view(), name='ad_comment_create'),

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Favorites
+{% endblock %}
+
+{% block content %}
+  <div class="container py-5">
+    <h1>Favorites</h1><br>
+    {% if page_obj %}
+        {% include 'ads/includes/forloop_body.html' %}
+    {% else %}
+        <h5>There are no advertisement yet</h5>
+    {% endif %}
+  </div>
+{% endblock %}

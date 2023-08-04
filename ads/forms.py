@@ -23,7 +23,7 @@ class AdForm(forms.ModelForm):
     class Meta:
         model = Ad
         fields = [
-            'country', 'city',
+            'country', 'city', 'phone',
             'price', 'price_per',
             'text', 'tags', 'picture'
         ]
@@ -37,6 +37,7 @@ class AdForm(forms.ModelForm):
         if len(pic) > self.max_upload_limit:
             err_msg = "File must be < " + self.max_upload_limit_text + " bytes"
             self.add_error('picture', err_msg)
+        return cleaned_data
 
     # Convert uploaded File object to a picture
     def save(self, commit=True):

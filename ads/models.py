@@ -14,10 +14,20 @@ import datetime
 
 class Ad(models.Model):
     price_per_choice = [
-        ('H', 'hour'),
-        ('D', 'day'),
-        ('W', 'week'),
-        ('M', 'month'),
+        ('Hour', 'hour'),
+        ('Day', 'day'),
+        ('Week', 'week'),
+        ('Month', 'month'),
+    ]
+    currency_choice = [
+        ('$', 'Dollar'),
+        ('€', 'Euro'),
+        ('元', 'Yuan'),
+        ('₽', 'Ruble'),
+        ('£', 'Pound'),
+        ('¥', 'Yen'),
+        ('₸', 'Tenge'),
+        ('₿', 'Bitcoin')
     ]
 
     #  Description
@@ -48,7 +58,7 @@ class Ad(models.Model):
     #  Import TaggableManager from taggit
     tags = TaggableManager(blank=True)
     #  rental price
-    price_per = models.CharField(max_length=1,
+    price_per = models.CharField(max_length=5,
                                  blank=False,
                                  null=False,
                                  choices=price_per_choice,
@@ -63,6 +73,11 @@ class Ad(models.Model):
             )
         ]
     )
+    currency = models.CharField(max_length=1,
+                                null=False,
+                                blank=False,
+                                choices=currency_choice,
+                                default='$')
     #  location
     country = models.CharField(max_length=50,
                                blank=False,
@@ -72,8 +87,8 @@ class Ad(models.Model):
                             null=False)
     #  phone number
     phone = PhoneNumberField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         unique=True,
     )
     #  Optional data
@@ -83,6 +98,11 @@ class Ad(models.Model):
     # Shows up in the Admin list
     def __str__(self):
         return f'{self.car.make.name} {self.car.model_name}, {self.car.year}'
+
+    def save(self, *args, **kwargs):
+        if not self.phone:
+            self.phone = self.owner.owner.phone
+        super().save(*args, **kwargs)
 
 
 class Fav(models.Model):
@@ -139,8 +159,8 @@ class Make(models.Model):
 
 class Car(models.Model):
     choice_transmission = [
-        ('A', 'Automatic'),
-        ('M', 'Manual')
+        ('Automatic', 'Automatic'),
+        ('Manual', 'Manual')
     ]
     min_val_msg = 'Minimum quantity horse powers - 70'
     max_val_msg = 'Maximum quantity horse powers - 1200'

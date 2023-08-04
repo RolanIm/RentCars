@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load app_tags %}
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+  <div class="container py-4">
+      <div class="row">
+        <aside class="col-12 col-md-3">
+            <img style="width: 200px;" src="{{ owner|gravatar:256 }}"
+                 class="rounded float-start" alt=""/>
+        </aside>
+        <aside class="col-6 col-md-6">
+          <ul class="list-group list-group-flush" style="width: 25rem">
+            <li class="list-group-item d-flex justify-content-between
+            align-items-center">
+                Name
+                <span class="badge bg-primary rounded-pill">
+                    {{ owner.first_name }}
+                </span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between
+            align-items-center">
+                Phone number
+                <span class="badge bg-primary rounded-pill">
+                    {{ owner.owner.phone }}
+                </span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between
+            align-items-center">
+                Email
+                <span class="badge bg-primary rounded-pill">
+                    {{ owner.email }}
+                </span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+  </div>
+  <div class="container py-5">
+    {% if page_obj %}
+        <div class="container py5">
+            {% include 'ads/includes/forloop_body.html' %}
+        </div>
+    {% else %}
+      <h5>There are no advertisement yet</h5>
+    {% endif %}
+  </div>
+  <h1>Reviews</h1>
+  <form method="post" action="{% url 'ads:ad_comment_create' owner.id %}">
+      {% csrf_token %}
+      {{ comment_form }}
+      <input type="button" value="send" class="btn btn-outline-dark">
+  </form>
+  {% if comments %}
+    <ul>
+    {% for comment in comments %}
+      <li>
+        <p>
+          {{ comment.text }}
+          ({{ comment.updated_at|naturaltime }})
+          {% if owner == comment.owner %}
+              <a href="{% url 'ads:ad_comment_delete' comment.id %}">
+              <button type="button" class="btn btn-outline-danger btn-sm">
+                  <small>Delete</small>
+              </button>
+              </a>
+          {% endif %}
+        </p>
+      </li>
+    {% endfor %}
+    </ul>
+    {% else %}
+        There are no comments yet.
+    {% endif %}
+{% endblock %}

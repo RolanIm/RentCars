@@ -1,10 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load app_tags %}
+{% load humanize %}
 
-</body>
-</html>
+{% block title %}
+    {{ ad }}
+{% endblock %}
+
+{% block content %}
+  <div class="container py-5">
+    <div class="row">
+        <aside class="col-12 col-md-6">
+            <div class="card mb-3">
+              <img src="{% url 'ads:ad_picture' ad.id %}"
+                   class="card-img-top"
+                   alt="{{ ad }}">
+              <div class="card-body">
+                <div class="row">
+                <aside class="col-auto">
+                <h5 class="card-title">
+                    {{ ad }}
+                </h5>
+                </aside>
+                <aside class="col-auto col-md-auto">
+                    <a href="#" onclick=
+                        "favPost(
+                            '{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }});
+                        return false;"
+                        {% if ad.id not in favorites %} style="display: none;" {% endif %}
+                        id="favorite_star_{{ad.id}}">
+                    <button type="button" class="btn btn-outline-dark btn-sm">
+                        <small>Delete from favorites</small>
+                    </button>
+                    </a>
+                    <!-- the second href -->
+                    <a href="#" onclick=
+                         "favPost(
+                             '{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }});
+                         return false;"
+                        {% if ad.id in favorites %} style="display: none;" {% endif %}
+                        id="unfavorite_star_{{ad.id}}">
+                    <button type="button" class="btn btn-outline-dark btn-sm">
+                        <small>Add to favorites ♡</small>
+                    </button>
+                    </a>
+                </aside>
+                </div>
+                <p class="card-text">
+                    {{ ad.country }}, {{ ad.city }}
+                </p>
+                <p class="card-text">
+                    {{ ad.text }}
+                </p>
+                <p class="card-text">
+                    <small class="text-body-secondary">
+                        Last updated {{ ad.updated_at|naturaltime }}
+                    </small>
+                </p>
+              </div>
+            </div>
+            {% if ad.tags.all %}
+              <p>
+                {% for tag in ad.tags.all %}
+                  <span class="badge rounded-pill bg-{{ colors|random }}">{{ tag }}</span>
+                {% endfor %}
+              </p>
+            {% endif %}
+            <div class="row">
+                <aside class="col-auto col-md-auto">
+                  <ul class="list-group list-group-flush" style="width: 26rem">
+                    <li class="list-group-item list-group-item-primary d-flex
+                    justify-content-between align-items-center">
+                        Transmission
+                        <span class="badge bg-primary rounded-pill">
+                            {{ ad.car.transmission }}
+                        </span>
+                    </li>
+                    <li class="list-group-item list-group-item-primary d-flex
+                    justify-content-between align-items-center">
+                        Number of passengers
+                        <span class="badge bg-primary rounded-pill">
+                            {{ ad.car.passenger_numbers }}
+                        </span>
+                    </li>
+                    <li class="list-group-item list-group-item-primary d-flex
+                     justify-content-between align-items-center">
+                        Horse powers
+                        <span class="badge bg-primary rounded-pill">
+                            {{ ad.car.hp }}
+                        </span>
+                    </li>
+                    <li class="list-group-item list-group-item-primary d-flex
+                     justify-content-between align-items-center">
+                        Year
+                        <span class="badge bg-primary rounded-pill">
+                            {{ ad.car.year }}
+                        </span>
+                    </li>
+                  </ul>
+                </aside>
+            </div>
+        </aside>
+        <aside class="col-6 col-md-3 container">
+            <div class="card text-white bg-primary mb-3"
+                 style="text-align:center; width: 400px;">
+              <div class="card-body">
+                <h4 class="card-title">
+                    {{ ad.price }}{{ ad.currency }} per {{ ad.price_per }}
+                </h4>
+              </div>
+            </div>
+            <ul class="list-group list-group-flush" style="width: 25rem">
+                <li class="list-group-item d-flex justify-content-between
+                align-items-center">
+                    Email
+                    <span class="badge bg-primary rounded-pill">
+                        {{ ad.owner.email }}
+                    </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between
+                align-items-center">
+                    Phone number
+                    <span class="badge bg-primary rounded-pill">
+                        {{ ad.owner.owner.phone }}
+                    </span>
+                </li>
+            </ul>
+            <a href="{% url 'ads:profile' ad.owner.username %}"
+               class="link-dark text-decoration-none">
+                <div class="card mb-3" style="width: 400px; height: 70px;">
+                  <div class="row g-0">
+                    <div class="col-md-2">
+                      <img style="width: 70px;" src="{{ ad.owner|gravatar:500 }}"
+                 class="rounded float-start" alt=""/>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">
+                            {{ ad.owner.first_name }}
+                        </h5>
+                        @{{ ad.owner.username }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </a>
+        </aside>
+    </div>
+  </div>
+    <script>
+        function favPost(url, ad_id) {
+            console.log('Requesting JSON');
+            $.post(url, {},  function(rowz){
+                console.log(url, 'finished');
+                $("#unfavorite_star_"+ad_id).toggle();
+                $("#favorite_star_"+ad_id).toggle();
+            }).fail(function(xhr) {
+                alert('Url failed with '+xhr.status+' '+url);
+            });
+        }
+    </script>
+{% endblock %}
