@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -7,18 +8,18 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 
 from .models import Ad, Comment, Fav
-from .owner import (OwnerListView, OwnerDeleteView,
+from .owner import (OwnerDeleteView,
                     OwnerDetailView, OwnerAdView)
 from .forms import MakeForm, AdForm, CarForm, CommentForm
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class AdListView(OwnerAdView, OwnerListView):
-    model = Ad
+class AdListView(OwnerAdView):
 
     def get(self, request, *args, **kwargs):
-        super().get(self, request)
+        all_ads = Ad.objects.all().select_related().distinct()
+        return super().get(request, ads=all_ads)
 
 
 class AdDetailView(OwnerDetailView):
@@ -29,7 +30,8 @@ class AdDetailView(OwnerDetailView):
         else:
             pk = kwargs.get('pk')
         x = get_object_or_404(Ad, id=pk)
-        comments = Comment.objects.filter(ad=x).order_by('-created_at')
+        comments_filtered = Comment.objects.filter(ad=x)
+        comments = comments_filtered.order_by('-updated_at')
         comment_form = CommentForm()
 
         favorites = list()
@@ -38,11 +40,14 @@ class AdDetailView(OwnerDetailView):
             rows = request.user.favorite_ads.values('id')
             # favorites = [2, 4, ...] using list comprehension
             favorites = [row['id'] for row in rows]
+
+        colors = ['primary', 'success', 'danger', 'warning', 'dark', 'info']
         ctx = {
             'ad': x,
+            'favorites': favorites,
+            'colors': colors,
             'comments': comments,
-            'comment_form': comment_form,
-            'favorites': favorites
+            'comment_form': comment_form
         }
         return render(request, 'ads/ad_detail.html', ctx)
 
@@ -59,13 +64,9 @@ class AdCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, ctx)
 
     def post(self, request):
-        owner_car = request.user.owner_car
+        make_form = MakeForm(request.POST or None)
+        car_form = CarForm(request.POST or None)
         ad_form = AdForm(request.POST, request.FILES or None)
-        car_form = CarForm(request.POST, instance=owner_car)
-        make_form = MakeForm(
-            request.POST,
-            instance=owner_car.make
-        )
 
         statement = (
                 ad_form.is_valid()
@@ -76,21 +77,21 @@ class AdCreateView(LoginRequiredMixin, View):
             ctx = {
                 'ad_form': ad_form,
                 'car_form': car_form,
-                'make_form': make_form
+                'make_form': make_form,
             }
             return render(request, self.template_name, ctx)
 
-        # Add owner and phone number to the model Ad before saving
-        ad = ad_form.save(commit=False)
-        ad.owner = self.request.user
-        ad.phone = self.request.user.owner.phone
-        ad.save()
-        ad_form.save()
         # Add make to the model Car before saving
         car = car_form.save(commit=False)
         make = make_form.save()
         car.make = make
         car.save()
+        # Add owner and phone number to the model Ad before saving
+        ad = ad_form.save(commit=False)
+        ad.owner = self.request.user
+        ad.car = car
+        ad.save()
+        ad_form.save()
         return redirect(self.success_url)
 
 
@@ -103,10 +104,15 @@ class AdUpdateView(LoginRequiredMixin, View):
         ad_form = AdForm(instance=ad)
         car_form = CarForm(instance=ad.car)
         make_form = MakeForm(instance=ad.car.make)
-        ctx = {'ad_form': ad_form, 'car_form': car_form, 'make_form': make_form}
+        ctx = {
+            'ad_form': ad_form,
+            'car_form': car_form,
+            'make_form': make_form,
+            'is_edit': True
+        }
         return render(request, self.template_name, ctx)
 
-    def post(self, request, pk=None):
+    def post(self, request, pk):
         ad = get_object_or_404(Ad, id=pk, owner=self.request.user)
         ad_form = AdForm(request.POST, request.FILES or None, instance=ad)
         car_form = CarForm(request.POST, instance=ad.car)
@@ -121,7 +127,7 @@ class AdUpdateView(LoginRequiredMixin, View):
             ctx = {
                 'ad_form': ad_form,
                 'car_form': car_form,
-                'make_form': make_form
+                'make_form': make_form,
             }
             return render(request, self.template_name, ctx)
 
@@ -133,25 +139,43 @@ class AdUpdateView(LoginRequiredMixin, View):
 
 class AdDeleteView(OwnerDeleteView):
     model = Ad
+    success_url = reverse_lazy('ads:all')
 
 
 class AdFavoritesView(LoginRequiredMixin, OwnerAdView):
-    template_name = reverse_lazy('ads:favorites')
+    template_name = 'ads/favorite_ads.html'
 
     def get(self, request, *args, **kwargs):
         # select_related() cashes query
-        favorite_ads = request.user.favorite_ads.value('ad')
-        ads = favorite_ads.select_related().distinct()
-        super().get(self, ads_with_filter=ads, statement=None)
+        favorite_ads = request.user.favorite_ads
+        return super().get(
+            request,
+            ads=favorite_ads,
+            statement=None
+        )
 
 
 class AdProfileView(LoginRequiredMixin, OwnerAdView):
-    template_name = reverse_lazy('ads:profile')
+    template_name = 'ads/ad_profile.html'
 
     def get(self, request, *args, **kwargs):
         # select_related() cashes query
-        ads = request.user.ads.select_related().distinct()
-        super().get(self, ads_with_filter=ads, statement=None)
+        if args:
+            username = args[0]
+        else:
+            username = kwargs.get('username')
+        owner = User.objects.filter(username=username)[0]
+        ads_filtered = Ad.objects.filter(owner__username=username)
+        owner_ads = ads_filtered.order_by('-created_at')
+        if owner_ads:
+            ads = owner_ads.select_related().distinct()
+            context = {
+                'owner': owner,
+                'ads': ads,
+            }
+            return super().get(request, ads=ads, statement=None, ctx=context)
+        else:
+            return super().get(request, *args, **kwargs)
 
 
 class CommentCreateView(LoginRequiredMixin, View):
@@ -169,16 +193,19 @@ class CommentCreateView(LoginRequiredMixin, View):
             ad=ad_obj
         )
         comment.save()
-        return redirect(reverse('ads:ad_detail', args=[pk]))
+        return redirect(reverse(
+            'ads:ad_detail',
+            args=[pk]))
 
 
 class CommentDeleteView(OwnerDeleteView):
     model = Comment
 
-    # https://stackoverflow.com/questions/26290415/deleteview-with-a-dynamic-success-url-dependent-on-id
     def get_success_url(self):
         ad = self.object.ad
-        return reverse('ads:ad_detail', args=[ad.id])
+        return reverse(
+            'ads:ad_detail',
+            args=[ad.id])
 
 
 def stream_file(request, pk):
@@ -196,7 +223,7 @@ class AddFavoriteView(LoginRequiredMixin, View):
     @staticmethod
     def post(request, pk):
         ad = get_object_or_404(Ad, id=pk)
-        fav = Fav(user=request.user, ad=ad)
+        fav = Fav(owner=request.user, ad=ad)
         try:
             fav.save()  # In case of duplicate key
         except IntegrityError:
@@ -211,7 +238,7 @@ class DeleteFavoriteView(LoginRequiredMixin, View):
     def post(request, pk):
         ad = get_object_or_404(Ad, id=pk)
         try:
-            Fav.objects.get(user=request.user, ad=ad).delete()
+            Fav.objects.get(owner=request.user, ad=ad).delete()
         except Fav.DoesNotExist:
             pass
         return HttpResponse()

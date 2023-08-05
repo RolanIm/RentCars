@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Delete the advertisement
+{% endblock %}
+
+{% block content %}
+    <div style="text-align: center" class="content pt-5 text-center">
+        <h1>Delete the advertisement</h1>
+        <p>Are you sure you want to delete your advertisement?</p>
+        <div class="card mx-auto" style="width: 18rem;">
+          <img src="{% url 'ads:ad_picture' ad.id %}"
+               class="card-img-top"
+               alt="{{ ad }}">
+            <div class="card-body justify-content-center align-items-center">
+                <h5>{{ ad }}</h5>
+                {{ ad.country }}, {{ ad.city }}<br>
+                {{ ad.price }}{{ ad.currency }} per {{ ad.price_per }}
+                <form action="" method="POST">
+                  {% csrf_token %}
+                  <div class="row">
+                    <aside class="col-auto container py-3">
+                        <input type="submit"  class="btn btn-primary" value="Yes, delete.">
+                    </aside>
+                    <aside class="col-auto container py-3">
+                        <a href="{% url 'ads:ad_detail' ad.id %}"
+                            class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </aside>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
