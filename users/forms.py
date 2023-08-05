@@ -15,3 +15,6 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Owner
         fields = ('phone', 'bio')
+        labels = {
+            'bio': 'About me'
+        }

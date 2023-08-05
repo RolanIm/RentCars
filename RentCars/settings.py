@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'phonenumber_field',
     'ads.apps.AdsConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
     'django_extensions',
     'taggit'
@@ -48,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',   # Add
+    'social_django.middleware.SocialAuthExceptionMiddleware',   # Added
 ]
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -65,8 +66,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',  # Add
-                'social_django.context_processors.login_redirect',  # Add
+                'social_django.context_processors.backends',  # Added
+                'social_django.context_processors.login_redirect',  # Added
             ],
         },
     },
