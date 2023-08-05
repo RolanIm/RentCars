@@ -22,18 +22,20 @@
           </div>
           <div class="card-body">
                 <form action="" method="post" enctype="multipart/form-data">
-                {% include 'ads/includes/advertisement_form.html' %}
-                {% include 'ads/includes/make_form.html' %}
-                {% include 'ads/includes/car_form.html' %}
+                {% include 'includes/form.html' %}
                     <input type="submit"
                             {% if is_edit %}
                                 value="Update"
                             {% else %}
                                 value="Create"
                            {% endif %}
-                        class="btn btn-outline-primary">
+                        class="btn btn-outline-primary"
+                        name="ad-form"
+                        id="ad-form">
                 <input type="submit" value="Cancel"
                        class="btn btn-outline-secondary"
+                       name="ad-form"
+                       id="ad-form"
                        onclick="window.location.href='{% url 'ads:all' %}';
                        return false;"
                 >

@@ -47,7 +47,7 @@ class AdDetailView(OwnerDetailView):
             'favorites': favorites,
             'colors': colors,
             'comments': comments,
-            'comment_form': comment_form
+            'forms': [comment_form]
         }
         return render(request, 'ads/ad_detail.html', ctx)
 
@@ -60,7 +60,10 @@ class AdCreateView(LoginRequiredMixin, View):
         ad_form = AdForm()
         car_form = CarForm()
         make_form = MakeForm()
-        ctx = {'ad_form': ad_form, 'car_form': car_form, 'make_form': make_form}
+        forms = [ad_form, make_form, car_form]
+        ctx = {
+            'forms': forms
+        }
         return render(request, self.template_name, ctx)
 
     def post(self, request):
@@ -74,10 +77,9 @@ class AdCreateView(LoginRequiredMixin, View):
                 and make_form.is_valid()
         )
         if not statement:
+            forms = [ad_form, make_form, car_form]
             ctx = {
-                'ad_form': ad_form,
-                'car_form': car_form,
-                'make_form': make_form,
+                'forms': forms
             }
             return render(request, self.template_name, ctx)
 
@@ -104,10 +106,9 @@ class AdUpdateView(LoginRequiredMixin, View):
         ad_form = AdForm(instance=ad)
         car_form = CarForm(instance=ad.car)
         make_form = MakeForm(instance=ad.car.make)
+        forms = [ad_form, make_form, car_form]
         ctx = {
-            'ad_form': ad_form,
-            'car_form': car_form,
-            'make_form': make_form,
+            'forms': forms,
             'is_edit': True
         }
         return render(request, self.template_name, ctx)
@@ -124,10 +125,9 @@ class AdUpdateView(LoginRequiredMixin, View):
                 and make_form.is_valid()
         )
         if not statement:
+            forms = [ad_form, make_form, car_form]
             ctx = {
-                'ad_form': ad_form,
-                'car_form': car_form,
-                'make_form': make_form,
+                'forms': forms
             }
             return render(request, self.template_name, ctx)
 

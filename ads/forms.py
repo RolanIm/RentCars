@@ -17,7 +17,7 @@ class AdForm(forms.ModelForm):
     # because we need to pull out things like content_type
     picture = forms.ImageField(
         required=False,
-        label='File to Upload <= ' + max_upload_limit_text)
+        label='Image to Upload <= ' + max_upload_limit_text)
     upload_field_name = 'picture'
 
     class Meta:
@@ -88,10 +88,10 @@ class CarForm(forms.ModelForm):
             'hp'
         ]
         labels = {
-            'model_name': 'name of the car model',
-            'passenger_numbers': 'maximum number of passengers',
-            'year': 'year of the car',
-            'hp': 'horse powers'
+            'model_name': 'Name of the car model',
+            'passenger_numbers': 'Maximum number of passengers',
+            'year': 'Year of the car',
+            'hp': 'Horse powers'
         }
 
 
