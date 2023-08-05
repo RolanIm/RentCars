@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Delete comment
+{% endblock %}
+
+{% block content %}
+    <div style="text-align: center" class="content pt-5">
+        <h1>Delete Comment</h1>
+        <p>Are you sure you want to delete comment?</p>
+        <p>{{ comment.text }}</p>
+
+        <form action="" method="POST">
+          {% csrf_token %}
+          <input type="submit"  class="btn btn-primary" value="Yes, delete.">
+          <a href="{% url 'ads:ad_profile' comment.ad.owner.username %}"
+             class="btn btn-secondary">
+              Cancel
+          </a>
+        </form>
+    </div>
+{% endblock %}

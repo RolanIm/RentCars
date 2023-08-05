@@ -8,7 +8,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from taggit.managers import TaggableManager
-from wheel.metadata import _
 import datetime
 
 
@@ -40,7 +39,6 @@ class Ad(models.Model):
     car = models.ForeignKey('Car',
                             blank=False,
                             null=False,
-                            related_name='owner_car',
                             on_delete=models.CASCADE)
     #  reviews users about landlord
     comments = models.ManyToManyField(User,
@@ -85,12 +83,6 @@ class Ad(models.Model):
     city = models.CharField(max_length=50,
                             blank=False,
                             null=False)
-    #  phone number
-    phone = PhoneNumberField(
-        null=True,
-        blank=True,
-        unique=True,
-    )
     #  Optional data
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -98,11 +90,6 @@ class Ad(models.Model):
     # Shows up in the Admin list
     def __str__(self):
         return f'{self.car.make.name} {self.car.model_name}, {self.car.year}'
-
-    def save(self, *args, **kwargs):
-        if not self.phone:
-            self.phone = self.owner.owner.phone
-        super().save(*args, **kwargs)
 
 
 class Fav(models.Model):
@@ -151,7 +138,7 @@ def max_value_current_year(value):
 
 
 class Make(models.Model):
-    name = models.CharField(null=False, blank=False, max_length=20, unique=True)
+    name = models.CharField(null=False, blank=False, max_length=20)
 
     def __str__(self):
         return self.name
@@ -185,7 +172,7 @@ class Car(models.Model):
             MaxValueValidator(1200, message=max_val_msg)
         ]
     )
-    year = models.IntegerField(_('year'), validators=[
+    year = models.IntegerField('year', validators=[
         MinValueValidator(1980),
         max_value_current_year
     ])

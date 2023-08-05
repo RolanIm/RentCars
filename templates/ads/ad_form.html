@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if is_edit %}
+        Edit the advertisement
+    {% else %}
+        Create an advertisement
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 p-5">
+        <div class="card">
+          <div class="card-header">
+            {% if is_edit %}
+                Edit the advertisement
+            {% else %}
+                Create an advertisement
+            {% endif %}
+          </div>
+          <div class="card-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                {% include 'ads/includes/advertisement_form.html' %}
+                {% include 'ads/includes/make_form.html' %}
+                {% include 'ads/includes/car_form.html' %}
+                    <input type="submit"
+                            {% if is_edit %}
+                                value="Update"
+                            {% else %}
+                                value="Create"
+                           {% endif %}
+                        class="btn btn-outline-primary">
+                <input type="submit" value="Cancel"
+                       class="btn btn-outline-secondary"
+                       onclick="window.location.href='{% url 'ads:all' %}';
+                       return false;"
+                >
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $("#upload_form").submit(function() {
+    console.log('Checking file size');
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var file = $('#id_{{ form.upload_field_name }}')[0].files[0];
+      if (file && file.size > {{ form.max_upload_limit }} ) {
+          alert("File " + file.name + " of type " + file.type + " must be < {{ form.max_upload_limit_text }}");
+      return false;
+          }
+        }
+    });
+  </script>
+{% endblock %}

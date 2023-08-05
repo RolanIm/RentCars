@@ -23,8 +23,8 @@ class AdForm(forms.ModelForm):
     class Meta:
         model = Ad
         fields = [
-            'country', 'city', 'phone',
-            'price', 'price_per',
+            'country', 'city',
+            'currency', 'price', 'price_per',
             'text', 'tags', 'picture'
         ]
 
@@ -65,6 +65,7 @@ class MakeForm(forms.ModelForm):
     class Meta:
         model = Make
         fields = 'name',
+        labels = {'name': 'Make of the car'}
 
 
 def year_choices():

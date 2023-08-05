@@ -25,7 +25,7 @@ urlpatterns = [
     path(
         'ad/<str:username>/profile',
         views.AdProfileView.as_view(),
-        name='profile'
+        name='ad_profile'
     ),
     path('ad_picture/<int:pk>', views.stream_file, name='ad_picture'),
     path('ad/<int:pk>/comment',

@@ -48,31 +48,4 @@
       <h5>There are no advertisement yet</h5>
     {% endif %}
   </div>
-  <h1>Reviews</h1>
-  <form method="post" action="{% url 'ads:ad_comment_create' owner.id %}">
-      {% csrf_token %}
-      {{ comment_form }}
-      <input type="button" value="send" class="btn btn-outline-dark">
-  </form>
-  {% if comments %}
-    <ul>
-    {% for comment in comments %}
-      <li>
-        <p>
-          {{ comment.text }}
-          ({{ comment.updated_at|naturaltime }})
-          {% if owner == comment.owner %}
-              <a href="{% url 'ads:ad_comment_delete' comment.id %}">
-              <button type="button" class="btn btn-outline-danger btn-sm">
-                  <small>Delete</small>
-              </button>
-              </a>
-          {% endif %}
-        </p>
-      </li>
-    {% endfor %}
-    </ul>
-    {% else %}
-        There are no comments yet.
-    {% endif %}
 {% endblock %}
