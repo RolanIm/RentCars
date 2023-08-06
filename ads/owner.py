@@ -18,11 +18,13 @@ class OwnerAdView(View):
 
     template_name = 'ads/ad_list.html'
 
-    def get(self, request, ads=None, statement=None, ctx=None):
-        #  search
-        str_val = request.GET.get('search', False)
-        if str_val:
-            if not statement:
+    def get(self, request, ads=None, ctx=None, empty_profile=False):
+        query = page_obj = None
+
+        if not empty_profile:
+            #  search
+            str_val = request.GET.get('search', False)
+            if str_val:
                 # multi-field search
                 # __icontains for case-insensitive search
                 q1 = Q(car__model_name__icontains=str_val)
@@ -31,23 +33,28 @@ class OwnerAdView(View):
                 q4 = Q(city__icontains=str_val)
                 q5 = Q(tags__name__in=[str_val])
                 statement = q1 | q2 | q3 | q4 | q5
-            # select_related() cashes query
-            if ads:
-                query = ads.filter(statement)
+                # select_related() cashes query
+                if ads:
+                    query = ads.filter(statement)
+                else:
+                    ads = Ad.objects.select_related().distinct()
+                    query = ads.filter(statement)
             else:
-                query = Ad.objects.select_related().distinct().filter(statement)
+                if ads:
+                    query = ads
+                else:
+                    query = Ad.objects.all().select_related().distinct()
 
-        else:
-            query = ads
+            #  shows up latest 12 ads on each page
+            paginator = Paginator(query.order_by('-created_at'), 12)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
 
-        #  shows up latest 12 ads on each page
-        paginator = Paginator(query.order_by('-created_at'), 12)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        if ctx:
-            ctx['page_obj'] = page_obj
-        else:
-            ctx = {'page_obj': page_obj}
+        if page_obj:
+            if ctx and query:
+                ctx['page_obj'] = page_obj
+            else:
+                ctx = {'page_obj': page_obj}
         return render(request, self.template_name, ctx)
 
 

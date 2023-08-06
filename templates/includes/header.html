@@ -47,7 +47,9 @@
               transform: translate(0px, 42px);"
                 data-popper-placement="bottom-start">
               <li>
-                  <a class="dropdown-item" href="{% url 'ads:ad_profile' user.username %}">
+                  <a class="dropdown-item"
+                     href="{% url 'ads:ad_profile' user.username %}"
+                  >
                     My profile
                   </a>
               </li>
@@ -66,9 +68,20 @@
             </ul>
           </ul>
       {% else %}
-        <li>
-{#        <a href="{% url 'login' %}?next={% url 'ads:all' %}">Login</a>#}
-        </li>
+{#        <li>#}
+{#            <a class="dropdown-item"#}
+{#               href="{% url 'users:login' %}?next={% url 'ads:all' %}"#}
+{#            >#}
+{#                Login#}
+{#            </a> |#}
+{#        </li>#}
+{#        <li>#}
+{#            <a class="dropdown-item"#}
+{#               href="{% url 'users:signup' %}?next={% url 'ads:all' %}"#}
+{#            >#}
+{#                SignUp#}
+{#            </a>#}
+{#        </li>#}
       {% endif %}
       </ul>
     </div>

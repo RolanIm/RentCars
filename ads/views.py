@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -47,7 +46,7 @@ class AdDetailView(OwnerDetailView):
             'favorites': favorites,
             'colors': colors,
             'comments': comments,
-            'forms': [comment_form]
+            'form': comment_form
         }
         return render(request, 'ads/ad_detail.html', ctx)
 
@@ -148,11 +147,7 @@ class AdFavoritesView(LoginRequiredMixin, OwnerAdView):
     def get(self, request, *args, **kwargs):
         # select_related() cashes query
         favorite_ads = request.user.favorite_ads
-        return super().get(
-            request,
-            ads=favorite_ads,
-            statement=None
-        )
+        return super().get(request, ads=favorite_ads)
 
 
 class AdProfileView(LoginRequiredMixin, OwnerAdView):
@@ -164,18 +159,15 @@ class AdProfileView(LoginRequiredMixin, OwnerAdView):
             username = args[0]
         else:
             username = kwargs.get('username')
-        owner = User.objects.filter(username=username)[0]
+        owner = request.user
         ads_filtered = Ad.objects.filter(owner__username=username)
         owner_ads = ads_filtered.order_by('-created_at')
+        context = {'owner': owner}
         if owner_ads:
             ads = owner_ads.select_related().distinct()
-            context = {
-                'owner': owner,
-                'ads': ads,
-            }
-            return super().get(request, ads=ads, statement=None, ctx=context)
-        else:
-            return super().get(request, *args, **kwargs)
+            context['ads'] = ads
+            return super().get(request, ads=ads, ctx=context)
+        return super().get(request, empty_profile=True, ctx=context)
 
 
 class CommentCreateView(LoginRequiredMixin, View):

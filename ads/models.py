@@ -103,8 +103,8 @@ class Fav(models.Model):
         unique_together = ['ad', 'owner']
 
     def __str__(self):
-        title = (f'{self.ad.car.make.name}'
-                 f' {self.ad.car.model_name}, '
+        title = (f'{self.ad.car.make.name} '
+                 f'{self.ad.car.model_name}, '
                  f'{self.ad.car.year}')
         return '%s likes %s' % (self.owner.username, title)
 

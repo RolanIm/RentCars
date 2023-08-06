@@ -126,13 +126,15 @@
               </div>
             </div>
             <ul class="list-group list-group-flush" style="width: 25rem">
-                <li class="list-group-item d-flex justify-content-between
-                align-items-center">
-                    Email
-                    <span class="badge bg-primary rounded-pill">
-                        {{ ad.owner.email }}
-                    </span>
-                </li>
+                {% if ad.owner.email %}
+                    <li class="list-group-item d-flex justify-content-between
+                    align-items-center">
+                        Email
+                        <span class="badge bg-primary rounded-pill">
+                            {{ ad.owner.email }}
+                        </span>
+                    </li>
+                {% endif %}
                 <li class="list-group-item d-flex justify-content-between
                 align-items-center">
                     Phone number

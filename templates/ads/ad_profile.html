@@ -28,13 +28,15 @@
                     {{ owner.owner.phone }}
                 </span>
             </li>
-            <li class="list-group-item d-flex justify-content-between
-            align-items-center">
-                Email
-                <span class="badge bg-primary rounded-pill">
-                    {{ owner.email }}
-                </span>
-            </li>
+            {% if owner.email %}
+                <li class="list-group-item d-flex justify-content-between
+                align-items-center">
+                    Email
+                    <span class="badge bg-primary rounded-pill">
+                        {{ owner.email }}
+                    </span>
+                </li>
+            {% endif %}
           </ul>
         </aside>
       </div>
