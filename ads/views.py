@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -150,7 +151,7 @@ class AdFavoritesView(LoginRequiredMixin, OwnerAdView):
         return super().get(request, ads=favorite_ads)
 
 
-class AdProfileView(LoginRequiredMixin, OwnerAdView):
+class AdProfileView(OwnerAdView):
     template_name = 'ads/ad_profile.html'
 
     def get(self, request, *args, **kwargs):
@@ -159,7 +160,7 @@ class AdProfileView(LoginRequiredMixin, OwnerAdView):
             username = args[0]
         else:
             username = kwargs.get('username')
-        owner = request.user
+        owner = User.objects.filter(username=username)[0]
         ads_filtered = Ad.objects.filter(owner__username=username)
         owner_ads = ads_filtered.order_by('-created_at')
         context = {'owner': owner}

@@ -24,6 +24,8 @@
             </a>
           </li>
         </ul>
+        {% else %}
+            <ul class="navbar-nav me-auto"></ul>
         {% endif %}
       <ul class="nav navbar-nav nav-pills navbar-end me-5 mb-2 mb-lg-0">
       <form class="d-flex">
@@ -40,7 +42,7 @@
             <a  class="dropdown-toggle dropdown-img" data-bs-toggle="dropdown"
                href="#" role="button" aria-haspopup="true"
                aria-expanded="false">
-                <img style="width: 50px;" src="{{ user|gravatar:350 }}" class="rounded float-start" alt=""/>
+                <img style="width: 49px;" src="{{ user|gravatar:350 }}" class="rounded float-start" alt=""/>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" style="position: absolute;
              inset: 0px auto auto 0px; margin: 0px;
@@ -64,24 +66,31 @@
                   </a>
               </li>
               <div class="dropdown-divider"></div>
-{#            <a href="{% url 'logout' %}?next={% url 'ads:all' %}">Logout</a>#}
+                <li>
+                    <a href="{% url 'logout' %}?next={% url 'ads:all' %}"
+                       class="dropdown-item">
+                        Logout
+                    </a>
+                </li>
             </ul>
           </ul>
       {% else %}
-{#        <li>#}
-{#            <a class="dropdown-item"#}
-{#               href="{% url 'users:login' %}?next={% url 'ads:all' %}"#}
-{#            >#}
-{#                Login#}
-{#            </a> |#}
-{#        </li>#}
-{#        <li>#}
-{#            <a class="dropdown-item"#}
-{#               href="{% url 'users:signup' %}?next={% url 'ads:all' %}"#}
-{#            >#}
-{#                SignUp#}
-{#            </a>#}
-{#        </li>#}
+          <ul class="navbar-nav me-auto navbar-end ">
+            <li class="nav-item">
+                <a class="nav-link active" style="font-size: 16px"
+                   href="{% url 'users:login' %}?next={% url 'ads:all' %}"
+                >
+                    Login
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" style="font-size: 16px"
+                   href="{% url 'users:signup' %}?next={% url 'ads:all' %}"
+                >
+                    SignUp
+                </a>
+            </li>
+          </ul>
       {% endif %}
       </ul>
     </div>

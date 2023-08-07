@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import (MinLengthValidator,
                                     MinValueValidator,
-                                    MaxValueValidator)
+                                    MaxValueValidator, MaxLengthValidator)
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.signals import post_save
@@ -32,9 +32,7 @@ class Ad(models.Model):
     #  Description
     text = models.TextField(null=True, blank=True)
     #  user
-    owner = models.ForeignKey(User,
-                              related_name='ads',
-                              on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     #  auto
     car = models.ForeignKey('Car',
                             blank=False,
@@ -112,7 +110,8 @@ class Fav(models.Model):
 class Comment(models.Model):
     text = models.TextField(
         validators=[
-            MinLengthValidator(3, "Comment must be greater than 3 characters")
+            MinLengthValidator(3, "Comment must be greater than 3 characters"),
+            MaxLengthValidator(50, "Comment must be lower than 51 characters")
         ]
     )
 
