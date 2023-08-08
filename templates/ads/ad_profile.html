@@ -6,23 +6,36 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container py-4">
-      <div class="row">
-        <aside class="col-12 col-md-3">
-            <img style="width: 200px;" src="{{ owner|gravatar:256 }}"
+  <div class="row mx-auto container py-4">
+      {% if owner == request.user %}
+          <a href="{% url 'users:profile_update' %}">
+              <button type="button"
+                      class="btn btn-outline-dark mx-auto btn-sm"
+              >
+                  Edit my profile
+              </button>
+          </a>
+      {% endif %}
+      <div class="row py-3">
+        <aside class="col-auto col-md-3">
+            <img style="width: 170px;" src="{{ owner|gravatar:256 }}"
                  class="rounded float-start" alt=""/>
         </aside>
-        <aside class="col-6 col-md-6">
+        <aside class="col-auto col-md-6">
           <ul class="list-group list-group-flush" style="width: 25rem">
             <li class="list-group-item d-flex justify-content-between
             align-items-center">
                 {% if owner.first_name %}
-                    Name
+                    <span class="text-dark">
+                        Name
+                    </span>
                     <span class="badge bg-primary rounded-pill">
                         {{ owner.first_name }}
                     </span>
                 {% else %}
-                    Username
+                    <span class="text-dark">
+                        Username
+                    </span>
                     <span class="badge bg-primary rounded-pill">
                         @{{ owner.username }}
                     </span>
@@ -30,7 +43,9 @@
             </li>
             <li class="list-group-item d-flex justify-content-between
             align-items-center">
-                Phone number
+                <span class="text-dark">
+                    Phone number
+                </span>
                 <span class="badge bg-primary rounded-pill">
                     {{ owner.owner.phone }}
                 </span>
@@ -38,7 +53,9 @@
             {% if owner.email %}
                 <li class="list-group-item d-flex justify-content-between
                 align-items-center">
-                    Email
+                    <span class="text-dark">
+                        Email
+                    </span>
                     <span class="badge bg-primary rounded-pill">
                         {{ owner.email }}
                     </span>
@@ -46,12 +63,30 @@
             {% endif %}
           </ul>
         </aside>
+        {% if owner.owner.bio %}
+        <aside class="col-auto py-3" style="max-width: 46rem">
+            <div class="card">
+              <div class="card-body text-dark">
+                  <h5>
+                      About
+                      {% if owner.first_name %}
+                          {{ owner.first_name }}
+                      {% else %}
+                          {{ owner.username }}
+                      {% endif %}
+                  </h5>
+                  {{ owner.owner.bio }}
+              </div>
+            </div>
+        </aside>
+        {% endif %}
       </div>
   </div>
-  <div class="container py-5">
+  <div class="container">
     {% if page_obj %}
         <div class="container py5">
             {% include 'ads/includes/forloop_body.html' %}
+            {% include 'ads/includes/paginator.html' %}
         </div>
     {% else %}
       <h5>There are no advertisement yet</h5>

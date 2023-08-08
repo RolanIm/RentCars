@@ -16,12 +16,10 @@ from .secret import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -30,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
@@ -41,6 +40,8 @@ INSTALLED_APPS = [
     'taggit'
 ]
 
+SITE_ID = 1
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',   # Added
+    'social_django.middleware.SocialAuthExceptionMiddleware',  # Added
 ]
 
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -75,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'RentCars.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -85,7 +85,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -105,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -117,7 +115,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
@@ -126,7 +123,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Login redirect
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'ada:all'
+LOGIN_REDIRECT_URL = 'ads:all'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -146,3 +143,9 @@ AUTHENTICATION_BACKENDS = (
 
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# SMTP configurations
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PORT = 587
+EMAIL_USE_TLS = True

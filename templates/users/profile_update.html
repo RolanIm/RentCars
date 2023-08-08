@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Update profile{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+      <div class="card">
+        <div class="card-header">
+            <h6>
+                Update profile | {{ user.username }}
+            </h6>
+        </div>
+          <div class="card-body">
+          {% load user_filters %}
+              <form
+                      method="post"
+                      {% if action_url %}
+                        action="{% url 'action_url' %}"
+                      {% endif %}
+              >
+              {% include 'includes/forms.html' %}
+                <input type="submit"
+                       value="Update"
+                       class="btn btn-outline-primary"
+                       name="update-profile"
+                       id="update-profile"
+                    >
+                <input type="submit" value="Cancel"
+                       class="btn btn-outline-secondary"
+                       name="update-profile"
+                       id="update-profile"
+                       onclick="window.location.href='{% url 'ads:ad_profile' user.username %}';
+                       return false;"
+                >
+              </form>
+          </div> <!-- card body -->
+        </div> <!-- card -->
+      </div> <!-- col -->
+  </div> <!-- row -->
+{% endblock %}

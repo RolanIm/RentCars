@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -11,8 +12,6 @@ from .models import Ad, Comment, Fav
 from .owner import (OwnerDeleteView,
                     OwnerDetailView, OwnerAdView)
 from .forms import MakeForm, AdForm, CarForm, CommentForm
-
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class AdListView(OwnerAdView):
@@ -99,7 +98,6 @@ class AdCreateView(LoginRequiredMixin, View):
 
 class AdUpdateView(LoginRequiredMixin, View):
     template_name = 'ads/ad_form.html'
-    success_url = reverse_lazy('ads:all')
 
     def get(self, request, pk):
         ad = get_object_or_404(Ad, id=pk, owner=self.request.user)
@@ -114,6 +112,7 @@ class AdUpdateView(LoginRequiredMixin, View):
         return render(request, self.template_name, ctx)
 
     def post(self, request, pk):
+
         ad = get_object_or_404(Ad, id=pk, owner=self.request.user)
         ad_form = AdForm(request.POST, request.FILES or None, instance=ad)
         car_form = CarForm(request.POST, instance=ad.car)
@@ -134,7 +133,8 @@ class AdUpdateView(LoginRequiredMixin, View):
         ad_form.save()
         make_form.save()
         car_form.save()
-        return redirect(self.success_url)
+        success_url = reverse('ads:ad_detail', args=[pk])
+        return redirect(success_url)
 
 
 class AdDeleteView(OwnerDeleteView):

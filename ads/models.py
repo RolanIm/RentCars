@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.db import models
 from django.core.validators import (MinLengthValidator,
                                     MinValueValidator,
@@ -171,7 +172,7 @@ class Car(models.Model):
             MaxValueValidator(1200, message=max_val_msg)
         ]
     )
-    year = models.IntegerField('year', validators=[
+    year = models.IntegerField(_('year'), validators=[
         MinValueValidator(1980),
         max_value_current_year
     ])

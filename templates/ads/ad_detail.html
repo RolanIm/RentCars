@@ -37,29 +37,31 @@
                     {{ ad }}
                 </h5>
                 </aside>
-                <aside class="col-auto col-md-auto">
-                    <a href="#" onclick=
-                        "favPost(
-                            '{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }});
-                        return false;"
-                        {% if ad.id not in favorites %} style="display: none;" {% endif %}
-                        id="favorite_star_{{ad.id}}">
-                    <button type="button" class="btn btn-outline-dark btn-sm">
-                        <small>Delete from favorites</small>
-                    </button>
-                    </a>
-                    <!-- the second href -->
-                    <a href="#" onclick=
-                         "favPost(
-                             '{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }});
-                         return false;"
-                        {% if ad.id in favorites %} style="display: none;" {% endif %}
-                        id="unfavorite_star_{{ad.id}}">
-                    <button type="button" class="btn btn-outline-dark btn-sm">
-                        <small>Add to favorites ♡</small>
-                    </button>
-                    </a>
-                </aside>
+                {% if user.is_authenticated %}
+                    <aside class="col-auto col-md-auto">
+                        <a href="#" onclick=
+                            "favPost(
+                                '{% url 'ads:ad_unfavorite' ad.id %}', {{ ad.id }});
+                            return false;"
+                            {% if ad.id not in favorites %} style="display: none;" {% endif %}
+                            id="favorite_star_{{ad.id}}">
+                        <button type="button" class="btn btn-outline-dark btn-sm">
+                            <small>Delete from favorites</small>
+                        </button>
+                        </a>
+                        <!-- the second href -->
+                        <a href="#" onclick=
+                             "favPost(
+                                 '{% url 'ads:ad_favorite' ad.id %}', {{ ad.id }});
+                             return false;"
+                            {% if ad.id in favorites %} style="display: none;" {% endif %}
+                            id="unfavorite_star_{{ad.id}}">
+                        <button type="button" class="btn btn-outline-dark btn-sm">
+                            <small>Add to favorites ♡</small>
+                        </button>
+                        </a>
+                    </aside>
+                {% endif %}
                 </div>
                 <p class="card-text">
                     {{ ad.country }}, {{ ad.city }}
@@ -232,6 +234,10 @@
 
     {% endfor %}
   {% else %}
-      There are no comments yet.
+      <div style="text-align: center">
+          <br>
+          <h6>There are no comments yet.</h6>
+      </div>
   {% endif %}
+  <br>
 {% endblock %}
