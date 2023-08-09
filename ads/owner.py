@@ -12,7 +12,7 @@ from ads.models import Ad
 
 class OwnerAdView(View):
     """
-    Subclass the View with overriding get method for searching and
+    Subclass of the View with overriding get method for searching and
     paginating ads.
     """
 
@@ -33,10 +33,10 @@ class OwnerAdView(View):
                 q4 = Q(city__icontains=str_val)
                 q5 = Q(tags__name__in=[str_val])
                 statement = q1 | q2 | q3 | q4 | q5
-                # select_related() cashes query
                 if ads:
                     query = ads.filter(statement)
                 else:
+                    # select_related() cashes query
                     ads = Ad.objects.select_related().distinct()
                     query = ads.filter(statement)
             else:

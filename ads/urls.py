@@ -31,8 +31,7 @@ urlpatterns = [
     path('ad/<int:pk>/comment',
          views.CommentCreateView.as_view(), name='ad_comment_create'),
     path('comment/<int:pk>/delete',
-         views.CommentDeleteView.as_view(
-             success_url=reverse_lazy('forums:all')),
+         views.CommentDeleteView.as_view(),
          name='ad_comment_delete'),
     path('ad/<int:pk>/favorite',
          views.AddFavoriteView.as_view(), name='ad_favorite'),

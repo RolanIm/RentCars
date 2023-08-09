@@ -13,6 +13,12 @@ import datetime
 
 
 class Ad(models.Model):
+    """
+    The main model for advertisements. Includes following: description, owner,
+    auto, reviews other people - comment, rental price, picture, tags,
+    location of the car.
+    """
+
     price_per_choice = [
         ('Hour', 'hour'),
         ('Day', 'day'),
@@ -92,6 +98,11 @@ class Ad(models.Model):
 
 
 class Fav(models.Model):
+    """
+    Model for favorites.
+    Include relation to Ad and owner.
+    """
+
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     owner = models.ForeignKey(
         User,
@@ -109,6 +120,11 @@ class Fav(models.Model):
 
 
 class Comment(models.Model):
+    """
+    Model for comments.
+    Include text and owner of comment, date, relation to Ad.
+    """
+
     text = models.TextField(
         validators=[
             MinLengthValidator(3, "Comment must be greater than 3 characters"),
@@ -130,14 +146,24 @@ class Comment(models.Model):
 
 
 def current_year():
+    """
+    Get current year.
+    """
     return datetime.date.today().year
 
 
 def max_value_current_year(value):
+    """
+    Max value for the year field validator.
+    """
     return MaxValueValidator(current_year())(value)
 
 
 class Make(models.Model):
+    """
+    Make for auto. Include name of the make.
+    """
+
     name = models.CharField(null=False, blank=False, max_length=20)
 
     def __str__(self):
@@ -145,6 +171,11 @@ class Make(models.Model):
 
 
 class Car(models.Model):
+    """
+    Model for the car field. Includes following field: model name, transmission,
+    maximum number of passengers, horse powers, make and year of the car.
+    """
+
     choice_transmission = [
         ('Automatic', 'Automatic'),
         ('Manual', 'Manual')
@@ -183,6 +214,11 @@ class Car(models.Model):
 
 
 class Owner(models.Model):
+    """
+    Model OneToOne relation to User model.
+    Include user, phone of the user and bio.
+    """
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE)

@@ -3,13 +3,15 @@ from .models import Ad, Comment, Fav, Car, Owner, Make
 
 
 class AdAdmin(admin.ModelAdmin):
+    # excluding some fields for admin
     exclude = ('picture', 'content_type')
-    # Добавляем интерфейс для поиска по тексту постов
+    # Adding search field in the admin panel
     search_fields = ('text',)
-    # Добавляем возможность фильтрации по дате
+    # Adding the ability to filter by date
     list_filter = ('created_at',)
 
 
+# registering models
 admin.site.register(Ad, AdAdmin),
 admin.site.register(Comment)
 admin.site.register(Car)

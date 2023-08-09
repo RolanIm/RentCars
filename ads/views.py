@@ -15,13 +15,20 @@ from .forms import MakeForm, AdForm, CarForm, CommentForm
 
 
 class AdListView(OwnerAdView):
+    """
+    View for showing all ads on the main page.
+    """
 
     def get(self, request, *args, **kwargs):
+        # select_related() cashes query
         all_ads = Ad.objects.all().select_related().distinct()
         return super().get(request, ads=all_ads)
 
 
 class AdDetailView(OwnerDetailView):
+    """
+    View for showing detail page of ads.
+    """
 
     def get(self, request, *args, **kwargs):
         if args:
@@ -29,6 +36,7 @@ class AdDetailView(OwnerDetailView):
         else:
             pk = kwargs.get('pk')
         x = get_object_or_404(Ad, id=pk)
+        # comments current ad
         comments_filtered = Comment.objects.filter(ad=x)
         comments = comments_filtered.order_by('-updated_at')
         comment_form = CommentForm()
@@ -40,6 +48,7 @@ class AdDetailView(OwnerDetailView):
             # favorites = [2, 4, ...] using list comprehension
             favorites = [row['id'] for row in rows]
 
+        # colors list for random tag color.
         colors = ['primary', 'success', 'danger', 'warning', 'dark', 'info']
         ctx = {
             'ad': x,
@@ -52,6 +61,10 @@ class AdDetailView(OwnerDetailView):
 
 
 class AdCreateView(LoginRequiredMixin, View):
+    """
+    View for creating ads.
+    """
+
     template_name = 'ads/ad_form.html'
     success_url = reverse_lazy('ads:all')
 
@@ -97,6 +110,10 @@ class AdCreateView(LoginRequiredMixin, View):
 
 
 class AdUpdateView(LoginRequiredMixin, View):
+    """
+    View for updating information about an ad.
+    """
+
     template_name = 'ads/ad_form.html'
 
     def get(self, request, pk):
@@ -143,6 +160,10 @@ class AdDeleteView(OwnerDeleteView):
 
 
 class AdFavoritesView(LoginRequiredMixin, OwnerAdView):
+    """
+    Adding an advertisement to favorites.
+    """
+
     template_name = 'ads/favorite_ads.html'
 
     def get(self, request, *args, **kwargs):
@@ -155,16 +176,18 @@ class AdProfileView(OwnerAdView):
     template_name = 'ads/ad_profile.html'
 
     def get(self, request, *args, **kwargs):
-        # select_related() cashes query
         if args:
             username = args[0]
         else:
             username = kwargs.get('username')
+        # getting user by username
         owner = User.objects.filter(username=username)[0]
+        # owner's ads
         ads_filtered = Ad.objects.filter(owner__username=username)
         owner_ads = ads_filtered.order_by('-created_at')
         context = {'owner': owner}
         if owner_ads:
+            # select_related() cashes query
             ads = owner_ads.select_related().distinct()
             context['ads'] = ads
             return super().get(request, ads=ads, ctx=context)
@@ -172,6 +195,9 @@ class AdProfileView(OwnerAdView):
 
 
 class CommentCreateView(LoginRequiredMixin, View):
+    """
+    View for creating comments.
+    """
 
     @staticmethod
     def post(request, *args, **kwargs):
@@ -202,6 +228,7 @@ class CommentDeleteView(OwnerDeleteView):
 
 
 def stream_file(request, pk):
+    # load picture data
     ad = get_object_or_404(Ad, id=pk)
     response = HttpResponse()
     response['Content-Type'] = ad.content_type

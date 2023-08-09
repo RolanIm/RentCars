@@ -39,6 +39,7 @@ class OwnerUserView(View):
             return render(request, self.template_name, ctx)
 
         owner = owner_form.save(commit=False)
+        # if UpdateUserView subclass
         if self.action == 'update':
             user = user_form.save(commit=False)
             user.username = request.user.username
@@ -47,6 +48,7 @@ class OwnerUserView(View):
             messages.success(request, _('Your profile updated!'))
             success_url = reverse('ads:ad_profile',
                                   args=[request.user.username])
+        # if CreateUserView subclass
         else:
             user = user_form.save()
             # load the owner instance created by the signal
@@ -110,6 +112,7 @@ class UserForgotPasswordView(SuccessMessageMixin, PasswordResetView):
     """
     View for password reset by email.
     """
+
     form_class = UserForgotPasswordForm
     template_name = 'users/user_password_reset.html'
     success_url = reverse_lazy('ads:all')
@@ -131,6 +134,7 @@ class UserPasswordResetConfirmView(SuccessMessageMixin,
     """
     Set new password view.
     """
+
     form_class = UserSetNewPasswordForm
     template_name = 'users/user_password_set_new.html'
     success_url = reverse_lazy('ads:all')

@@ -6,19 +6,25 @@ from django.contrib.auth.forms import (UserCreationForm, UserChangeForm,
 
 
 class CreateUserForm(UserCreationForm):
+    """
+    Registration form. Includes first name, email and username.
+    """
 
     class Meta:
         model = User
         fields = ('first_name', 'email', 'username')
         labels = {'Name': 'first_name'}
         help_texts = {
-            'first_name': 'your name or your company name',
-            'email': 'if you lost your password, '
-                     'you can reset it only with email'
+            'first_name': 'Your name or your company name.',
+            'email': 'If you lost your password, '
+                     'you can reset it only with email.'
         }
 
 
 class UpdateUserForm(UserChangeForm):
+    """
+    Update profile form. Includes first name and email.
+    """
 
     class Meta(UserChangeForm.Meta):
         model = User
@@ -27,12 +33,19 @@ class UpdateUserForm(UserChangeForm):
 
 
 class OwnerForm(forms.ModelForm):
+    """
+    Form for the Owner model. Includes phone and bio of the user.
+    """
 
     class Meta:
         model = Owner
         fields = ['phone', 'bio']
         labels = {
             'bio': 'About me'
+        }
+        help_texts = {
+            'phone': 'The phone number will be visible to all users '
+                     'in your profile and in your ads.'
         }
 
 
