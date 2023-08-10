@@ -13,6 +13,8 @@ from .owner import (OwnerDeleteView,
                     OwnerDetailView, OwnerAdView)
 from .forms import MakeForm, AdForm, CarForm, CommentForm
 
+import random
+
 
 class AdListView(OwnerAdView):
     """
@@ -50,12 +52,23 @@ class AdDetailView(OwnerDetailView):
 
         # colors list for random tag color.
         colors = ['primary', 'success', 'danger', 'warning', 'dark', 'info']
+        tags_with_colors = []
+        tags = x.tags.all()
+        # tags_with_colors is [(tag, color), ...]
+        for i in range(len(tags)):
+            if i < len(colors):
+                color = colors[i]
+            else:
+                color = random.choice(colors)
+            tags_with_colors.append((tags[i], color))
+
         ctx = {
             'ad': x,
             'favorites': favorites,
             'colors': colors,
             'comments': comments,
-            'form': comment_form
+            'form': comment_form,
+            'tags_with_colors': tags_with_colors
         }
         return render(request, 'ads/ad_detail.html', ctx)
 

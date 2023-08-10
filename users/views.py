@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import (PasswordResetView,
-                                       PasswordResetConfirmView)
+                                       PasswordResetConfirmView,
+                                       PasswordChangeView
+                                       )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.contrib import messages
@@ -9,7 +11,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from .forms import (OwnerForm, CreateUserForm, UpdateUserForm,
-                    UserForgotPasswordForm, UserSetNewPasswordForm)
+                    UserForgotPasswordForm, UserSetNewPasswordForm,
+                    UserChangePasswordForm)
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -143,4 +146,20 @@ class UserPasswordResetConfirmView(SuccessMessageMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Set new password'
+        return context
+
+
+class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    """
+    Change user's password view.
+    """
+
+    form_class = UserChangePasswordForm
+    template_name = 'users/user_password_change.html'
+    success_message = 'Password changed!'
+    success_url = reverse_lazy('ads:all')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Change the password'
         return context

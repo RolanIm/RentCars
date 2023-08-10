@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from ads.models import Owner
 from django.contrib.auth.forms import (UserCreationForm, UserChangeForm,
-                                       PasswordResetForm, SetPasswordForm)
+                                       PasswordResetForm, SetPasswordForm,
+                                       PasswordChangeForm)
 
 
 class CreateUserForm(UserCreationForm):
@@ -68,7 +69,24 @@ class UserForgotPasswordForm(PasswordResetForm):
 
 class UserSetNewPasswordForm(SetPasswordForm):
     """
-    Changing user password after confirmation.
+    Changing user's password after confirmation.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Update form styles.
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+
+class UserChangePasswordForm(PasswordChangeForm):
+    """
+    Changing user's password(not forgot password).
     """
 
     def __init__(self, *args, **kwargs):

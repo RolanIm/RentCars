@@ -76,14 +76,13 @@
                 </p>
               </div>
             </div>
-            {% if ad.tags.all %}
-              <p>
-                {% for tag in ad.tags.all %}
-                  <span class="badge rounded-pill bg-{{ colors|random }}">{{ tag }}</span>
+              {% if tags_with_colors %}
+                  {% for tag, color in tags_with_colors %}
+                    <span class="badge rounded-pill bg-{{ color }}">{{ tag }}</span>
                 {% endfor %}
-              </p>
-            {% endif %}
-            <div class="row">
+              {% endif %}
+
+            <div class="row py-3">
                 <aside class="col-auto col-md-auto">
                   <ul class="list-group list-group" style="width: 39rem">
                     <li class="list-group-item list-group-item d-flex
@@ -146,25 +145,39 @@
                 </li>
             </ul>
             <aside class="col-auto py-3">
-            <a href="{% url 'ads:ad_profile' ad.owner.username %}"
-               class="link-dark text-decoration-none">
-                <div class="card mb-3" style="width: 400px; height: 70px;">
-                  <div class="row g-0">
-                    <div class="col-md-2">
-                      <img style="width: 70px;" src="{{ ad.owner|gravatar:500 }}"
-                 class="rounded float-start" alt=""/>
-                    </div>
-                    <div class="col-md-8">
-                      <div class="card-body">
-                        <h5 class="card-title">
-                            {{ ad.owner.first_name }}
-                        </h5>
-                        @{{ ad.owner.username }}
-                      </div>
-                    </div>
+                <div class="card" style="width: 25rem">
+                  <div class="card-body row">
+                    <a href="{% url 'ads:ad_profile' ad.owner.username %}"
+                       class="link-dark text-decoration-none">
+                        <aside class="col-auto">
+                                <img style="width: 45px;" src="{{ ad.owner|gravatar:350 }}"
+                                 class="rounded float-start" alt=""/>
+                                <h6 class="mb-0" style="margin-left: 55px">
+                                    {% if ad.owner.first_name %}
+                                        {{ ad.owner.first_name }}
+                                    {% else %}
+                                        <span style="margin-top: 50%">
+                                            @{{ ad.owner.username }}
+                                        </span>
+                                    {% endif %}
+                                </h6>
+                        </aside>
+                        <aside class="col-auto" style="margin-left: 55px;">
+                            {% if ad.owner.first_name %}
+                                <small class="text-body-secondary">
+                                    @{{ ad.owner.username }}
+                                </small>
+                            {% else %}
+                                {% if ad.owner.owner.bio %}
+                                  <small class="text-body-secondary">
+                                      {{ ad.owner.owner.bio|truncatewords:7 }}
+                                  </small>
+                                {% endif %}
+                            {% endif %}
+                        </aside>
+                    </a>
                   </div>
                 </div>
-            </a>
             </aside>
         </aside>
     </div>
@@ -198,7 +211,7 @@
             <a href="{% url 'ads:ad_profile' comment.owner.username %}"
                class="link-dark text-decoration-none">
                 <aside class="col-auto">
-                    <img style="width: 35px;" src="{{ comment.owner|gravatar:350 }}"
+                    <img style="width: 38px;" src="{{ comment.owner|gravatar:512 }}"
                          class="rounded float-start" alt=""/>
                     <h6 class="mb-0" style="margin-left: 50px">
                         {% if comment.owner.first_name %}
