@@ -6,12 +6,12 @@
 ## Website with car rental ads 🚘
 
 - Renting out your own car
-- Contract directly with the landlord
+- Contract directly with the owner
 
 ---
 ## Description
 A website where people will be able to post ads about rental their car.
-In description they can specify features of the car(rental price, year,
+In description, they can specify features of the car(rental price, year,
 HP, transmission, number of passengers).
 
 You can find a car by make, number of rental days, city and country that
@@ -20,6 +20,7 @@ and delete a photo of your car.
 
 People will also have the opportunity to view the profile of private 
 owner and organizations.
+
 ---
 
 ## Features
@@ -28,6 +29,7 @@ owner and organizations.
 - 💛 The ability to add to favorites.
 - ✔ Users will be able to access other people's profiles, leave feedback 
 on the deal and view their ads.
+
 ---
 ## Tech
 
@@ -37,6 +39,25 @@ on the deal and view their ads.
 - [Python](https://www.python.org/)
 - [Django](https://www.djangoproject.com/)
 
+## Installation
+- Clone the repository to your computer:
+  - ```git clone https://github.com/RolanIm/yatube_project.git```
+- Install and create the virtual environment:
+    - for windows: ```python -m venv venv```
+    - for Unix/macOS: ```python3 -m venv venv```
+- Activate a virtual environment:
+  - for windows: ```source venv/Scripts/activate```
+  - for Unix/macOS: ```source venv/bin/activate```
+- Install dependencies from the file requirements.txt: 
+  - ```pip install -r requirements.txt```
+- Make migrations
+	- ```python manage.py makemigrations```
+	- ```python manage.py migrate```
+- Run the `manage.py` file:
+  - ```python manage.py runserver```
+- Go to the site using the link http://127.0.0.1:8000/
+
+---
 ## Author
 ### [_Rolan Imangulov_](https://github.com/RolanIm)
 
