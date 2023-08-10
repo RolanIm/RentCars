@@ -1,13 +1,9 @@
-# RentCars
+# RentCars 🚘
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python&logoColor=yellow&labelColor=blue)
 ![Django](https://img.shields.io/badge/Django-4.2-0C4B33?style=flat-square&logo=django&logoColor=white&labelColor=0C4B33)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-712CF9?style=flat-square&logo=bootstrap&logoColor=white&labelColor=712CF9)
 
-## Website with car rental ads 🚘
-
-- Renting out your own car
-- Contract directly with the owner
-
+![RentCar Demo](demo/rentcar.gif)
 ---
 ## Description
 A website where people will be able to post ads about rental their car.
