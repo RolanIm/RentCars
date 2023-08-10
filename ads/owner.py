@@ -32,7 +32,8 @@ class OwnerAdView(View):
                 q3 = Q(country__icontains=str_val)
                 q4 = Q(city__icontains=str_val)
                 q5 = Q(tags__name__in=[str_val])
-                statement = q1 | q2 | q3 | q4 | q5
+                q6 = Q(price_per__icontains=str_val)
+                statement = q1 | q2 | q3 | q4 | q5 | q6
                 if ads:
                     query = ads.filter(statement)
                 else:

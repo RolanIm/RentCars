@@ -19,15 +19,15 @@ will be specified in the tags and description. You will also be able to add
 and delete a photo of your car.
 
 People will also have the opportunity to view the profile of private 
-landlords and organizations.
+owner and organizations.
 ---
 
 ## Features
-- the ability to add photos to the ad.
-- searching by tags, title and text.
-- the ability to add to favorites.
-- the ability to add tags.
-- users will be able to access other people's profiles and view their ads.
+- 🖼 The ability to add photos to the ad.
+- 🔍 Searching by tags, title, text, country and city.
+- 💛 The ability to add to favorites.
+- ✔ Users will be able to access other people's profiles, leave feedback 
+on the deal and view their ads.
 ---
 ## Tech
 
