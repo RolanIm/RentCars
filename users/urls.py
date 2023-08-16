@@ -1,8 +1,8 @@
-from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 from . import views
 from .views import (UserPasswordResetConfirmView, UserForgotPasswordView,
-                    UserPasswordChangeView)
+                    UserPasswordChangeView, UserLoginView)
 
 
 app_name = 'users'
@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path(
         'auth/login/',
-        LoginView.as_view(template_name='users/login.html'),
+        UserLoginView.as_view(template_name='users/login.html'),
         name='login'
     ),
     path(

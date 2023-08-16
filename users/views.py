@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import (PasswordResetView,
                                        PasswordResetConfirmView,
-                                       PasswordChangeView
+                                       PasswordChangeView,
+                                       LoginView
                                        )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
@@ -80,15 +81,30 @@ class CreateUserView(OwnerUserView):
     action = 'signup'
 
     def get(self, request, user_form=None, owner_form=None):
-        user_form = CreateUserForm()
-        owner_form = OwnerForm()
-        return super().get(request, user_form, owner_form)
+        if not request.user.is_authenticated:
+            user_form = CreateUserForm()
+            owner_form = OwnerForm()
+            return super().get(request, user_form, owner_form)
+        success_url = reverse('ads:ad_profile',
+                              args=[request.user.username]
+                              )
+        return redirect(success_url)
 
     @transaction.atomic
     def post(self, request, user_form=None):
         user_form = CreateUserForm(request.POST or None)
         owner_form = OwnerForm(request.POST or None)
         return super().post(request, user_form, owner_form)
+
+
+class UserLoginView(LoginView):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().get(request, *args, **kwargs)
+        success_url = reverse('ads:ad_profile',
+                              args=[request.user.username]
+                              )
+        return redirect(success_url)
 
 
 class UpdateUserView(LoginRequiredMixin, OwnerUserView):
@@ -140,7 +156,7 @@ class UserPasswordResetConfirmView(SuccessMessageMixin,
 
     form_class = UserSetNewPasswordForm
     template_name = 'users/user_password_set_new.html'
-    success_url = reverse_lazy('ads:all')
+    success_url = reverse_lazy('users:login')
     success_message = 'Password done! Yoy can login on the site.'
 
     def get_context_data(self, **kwargs):

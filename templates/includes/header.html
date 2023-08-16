@@ -28,16 +28,16 @@
             <ul class="navbar-nav me-auto"></ul>
         {% endif %}
       <ul class="nav navbar-nav nav-pills navbar-end me-5 mb-2 mb-lg-0">
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="search" placeholder="Search"
-               name="search"
-            {% if search %} value="{{ search }}"{% endif %}>
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">
-            Search
-        </button>
-        <a href="{% url 'ads:all' %}"><i class="fa fa-undo"></i></a>
-      </form>
-      {% if user.is_authenticated %}
+          <form class="d-flex">
+            <input class="form-control me-sm-2" type="search" placeholder="Search"
+                   name="search"
+                {% if search %} value="{{ search }}"{% endif %}>
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                Search
+            </button>
+            <a href="{% url 'ads:all' %}"><i class="fa fa-undo"></i></a>
+          </form>
+        {% if user.is_authenticated %}
           <ul class="nav-item dropdown dropdown-menu-end dropdown-menu-lg-start">
             <a  class="dropdown-toggle dropdown-img" data-bs-toggle="dropdown"
                href="#" role="button" aria-haspopup="true"
@@ -74,7 +74,7 @@
                 </li>
             </ul>
           </ul>
-      {% else %}
+        {% else %}
           <ul class="navbar-nav me-auto navbar-end ">
             <li class="nav-item">
                 <a class="nav-link active" style="font-size: 16px"
@@ -91,7 +91,7 @@
                 </a>
             </li>
           </ul>
-      {% endif %}
+        {% endif %}
       </ul>
     </div>
   </div>
