@@ -37,7 +37,7 @@ on the deal and view their ads.
 
 ## Installation
 - Clone the repository to your computer:
-  - ```git clone https://github.com/RolanIm/yatube_project.git```
+  - ```git clone https://github.com/RolanIm/RentCars.git```
 - Install and create the virtual environment:
     - for windows: ```python -m venv venv```
     - for Unix/macOS: ```python3 -m venv venv```
