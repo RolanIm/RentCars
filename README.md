@@ -6,8 +6,8 @@
 ![RentCar Demo](demo/rentcar.gif)
 ---
 ## Description
-A website where people will be able to post ads about rental their car.
-In description, they can specify features of the car(rental price, year,
+The website where people will be able to post ads about renting their car.
+In description of ad, they can specify features of the car(rental price, year,
 HP, transmission, number of passengers).
 
 You can find a car by make, number of rental days, city and country that
