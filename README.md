@@ -36,22 +36,54 @@ on the deal and view their ads.
 - [Django](https://www.djangoproject.com/)
 
 ## Installation
-- Clone the repository to your computer:
-  - ```git clone https://github.com/RolanIm/RentCars.git```
-- Install and create the virtual environment:
-    - for windows: ```python -m venv venv```
-    - for Unix/macOS: ```python3 -m venv venv```
-- Activate a virtual environment:
-  - for windows: ```source venv/Scripts/activate```
-  - for Unix/macOS: ```source venv/bin/activate```
-- Install dependencies from the file requirements.txt: 
-  - ```pip install -r requirements.txt```
-- Make migrations
-	- ```python manage.py makemigrations```
-	- ```python manage.py migrate```
-- Run the `manage.py` file:
-  - ```python manage.py runserver```
-- Go to the site using the link http://127.0.0.1:8000/
+
+Clone the repository to your computer:
+
+```
+git clone https://github.com/RolanIm/RentCars.git
+```
+
+Install and create the virtual environment:
+
+```
+python3 -m venv venv
+```
+
+Activate a virtual environment:
+- for windows:
+
+  ```
+  source venv/Scripts/activate
+  ```
+- for Unix/macOS:
+
+  ```
+  source venv/bin/activate
+  ```
+
+Install dependencies from the file requirements.txt: 
+
+```
+pip install -r requirements.txt
+```
+
+Make migrations
+
+```
+python manage.py makemigrations
+```
+
+```
+python manage.py migrate
+```
+
+Run the `manage.py` file: 
+
+```
+python manage.py runserver
+```
+
+Go to the site using the link http://127.0.0.1:8000/
 
 ---
 ## Author
